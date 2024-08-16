@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-toe</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+            <section class="title">
+                <h1>Tic-Tac-Toe</h1>
+            </section>
+            <section class="display">
+                Player <span class="display-player playerX">X</span>'s turn
+            </section>
+            <section class="content">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </section>
+            <section class="announcer hide"></section>
+            <section class="controls">
+                <button id="reset">Reset</button>
+            </section>
+    </div>
+
+<script>
+        window.addEventListener('DOMContentLoaded', () => {
+        const tiles = Array.from(document.querySelectorAll('.tile'));
+        const display = document.querySelector('.display');
+        const announcer = document.querySelector('.announcer');
+        const resetButton = document.querySelector('#reset');
+        let currentPlayer = 'X';
+        let gameBoard = Array(9).fill(null);
+        let gameOver = false;
+
+        tiles.forEach((tile, index) => {
+        tile.addEventListener('click', () => {
+        if (gameOver) return;
+        if (gameBoard[index] === null) {
+            gameBoard[index] = currentPlayer;
+            tile.textContent = currentPlayer;
+            tile.classList.add(currentPlayer); // Add class X or O to the tile
+            checkWin();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            display.textContent = `Player ${currentPlayer}'s turn`;
+        }
+        });
+        });
+
+        resetButton.addEventListener('click', () => {
+        gameBoard = Array(9).fill(null);
+        tiles.forEach((tile) => {
+        tile.textContent = '';
+        tile.classList.remove('X', 'O'); // Remove class X or O from the tile
+        });
+        currentPlayer = 'X';
+        display.textContent = `Player ${currentPlayer}'s turn`;
+        gameOver = false;
+        announcer.classList.add('hide');
+        });
+
+        function checkWin() {
+        const winConditions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+        ];
+
+        for (let i = 0; i < winConditions.length; i++) {
+        const [a, b, c] = winConditions[i];
+        if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[b] === gameBoard[c]) {
+            gameOver = true;
+            announcer.textContent = `Player ${gameBoard[a]} wins!`;
+            announcer.classList.remove('hide');
+            return;
+        }
+        }
+
+        if (!gameBoard.includes(null)) {
+        gameOver = true;
+        announcer.textContent = `It's a draw!`;
+        announcer.classList.remove('hide');
+        }
+        }
+        });
+</script>
+</body>
+</html>
